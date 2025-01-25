@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>Battleship</title>
+
+  <meta name="author" content="Timothy Batchelder">
+  <meta name="description" content="A javascript conversion of Katrina's python Battleship..">
+
+  <link rel="stylesheet" href="css/bs.css">
+</head>
+
+<body>
+  <div>
+    <h1>Welcome to Battleship!</h1>
+  </div>
+  <div class="left-side">
+    <h4>
+      Find and sink all five hidden ships.
+      <br />
+      Click on a &#9925 cell to fire a shot.
+      <br />
+      &nbsp &nbsp &#128166 = Missed
+      <br />
+      &nbsp &nbsp &#128165 = Hit
+    </h4>
+  </div>
+  <div class="right-side">
+    <span id="ship0">Ship 1: 5 spaces</span><br />
+    <span id="ship1">Ship 2: 4 spaces</span><br />
+    <span id="ship2">Ship 3: 3 spaces</span><br />
+    <span id="ship3">Ship 4: 3 spaces</span><br />
+    <span id="ship4">Ship 5: 2 spaces</span>
+  </div>
+  <table class="battleBoard">
+    <thead>
+      <td class="corner"></td>
+      <td class="marker">A</td>
+      <td class="marker">B</td>
+      <td class="marker">C</td>
+      <td class="marker">D</td>
+      <td class="marker">E</td>
+      <td class="marker">F</td>
+      <td class="marker">G</td>
+      <td class="marker">H</td>
+      <td class="marker">I</td>
+      <td class="marker">J</td>
+    </thead>
+    <tr>
+      <td class="marker">0</td>
+      <td id="A0">&#9925</td>
+      <td id="B0">&#9925</td>
+      <td id="C0">&#9925</td>
+      <td id="D0">&#9925</td>
+      <td id="E0">&#9925</td>
+      <td id="F0">&#9925</td>
+      <td id="G0">&#9925</td>
+      <td id="H0">&#9925</td>
+      <td id="I0">&#9925</td>
+      <td id="J0">&#9925</td>
+    </tr>
+    <tr>
+      <td class="marker">1</td>
+      <td id="A1">&#9925</td>
+      <td id="B2">&#9925</td>
+      <td id="C1">&#9925</td>
+      <td id="D1">&#9925</td>
+      <td id="E1">&#9925</td>
+      <td id="F1">&#9925</td>
+      <td id="G1">&#9925</td>
+      <td id="H1">&#9925</td>
+      <td id="I1">&#9925</td>
+      <td id="J1">&#9925</td>
+    </tr>
+    <tr>
+      <td class="marker">2</td>
+      <td id="A2">&#9925</td>
+      <td id="B2">&#9925</td>
+      <td id="C2">&#9925</td>
+      <td id="D2">&#9925</td>
+      <td id="E2">&#9925</td>
+      <td id="F2">&#9925</td>
+      <td id="G2">&#9925</td>
+      <td id="H2">&#9925</td>
+      <td id="I2">&#9925</td>
+      <td id="J2">&#9925</td>
+    </tr>
+    <tr>
+      <td class="marker">3</td>
+      <td id="A3">&#9925</td>
+      <td id="B3">&#9925</td>
+      <td id="C3">&#9925</td>
+      <td id="D3">&#9925</td>
+      <td id="E3">&#9925</td>
+      <td id="F3">&#9925</td>
+      <td id="G3">&#9925</td>
+      <td id="H3">&#9925</td>
+      <td id="I3">&#9925</td>
+      <td id="J3">&#9925</td>
+    </tr>
+    <tr>
+      <td class="marker">4</td>
+      <td id="A4">&#9925</td>
+      <td id="B4">&#9925</td>
+      <td id="C4">&#9925</td>
+      <td id="D4">&#9925</td>
+      <td id="E4">&#9925</td>
+      <td id="F4">&#9925</td>
+      <td id="G4">&#9925</td>
+      <td id="H4">&#9925</td>
+      <td id="I4">&#9925</td>
+      <td id="J4">&#9925</td>
+    </tr>
+    <tr>
+      <td class="marker">5</td>
+      <td id="A5">&#9925</td>
+      <td id="B5">&#9925</td>
+      <td id="C5">&#9925</td>
+      <td id="D5">&#9925</td>
+      <td id="E5">&#9925</td>
+      <td id="F5">&#9925</td>
+      <td id="G5">&#9925</td>
+      <td id="H5">&#9925</td>
+      <td id="I5">&#9925</td>
+      <td id="J5">&#9925</td>
+    </tr>
+    <tr>
+      <td class="marker">6</td>
+      <td id="A6">&#9925</td>
+      <td id="B6">&#9925</td>
+      <td id="C6">&#9925</td>
+      <td id="D6">&#9925</td>
+      <td id="E6">&#9925</td>
+      <td id="F6">&#9925</td>
+      <td id="G6">&#9925</td>
+      <td id="H6">&#9925</td>
+      <td id="I6">&#9925</td>
+      <td id="J6">&#9925</td>
+    </tr>
+    <tr>
+      <td class="marker">7</td>
+      <td id="A7">&#9925</td>
+      <td id="B7">&#9925</td>
+      <td id="C7">&#9925</td>
+      <td id="D7">&#9925</td>
+      <td id="E7">&#9925</td>
+      <td id="F7">&#9925</td>
+      <td id="G7">&#9925</td>
+      <td id="H7">&#9925</td>
+      <td id="I7">&#9925</td>
+      <td id="J7">&#9925</td>
+    </tr>
+    <tr>
+      <td class="marker">8</td>
+      <td id="A8">&#9925</td>
+      <td id="B8">&#9925</td>
+      <td id="C8">&#9925</td>
+      <td id="D8">&#9925</td>
+      <td id="E8">&#9925</td>
+      <td id="F8">&#9925</td>
+      <td id="G8">&#9925</td>
+      <td id="H8">&#9925</td>
+      <td id="I8">&#9925</td>
+      <td id="J8">&#9925</td>
+    </tr>
+    <tr>
+      <td class="marker">9</td>
+      <td id="A9">&#9925</td>
+      <td id="B9">&#9925</td>
+      <td id="C9">&#9925</td>
+      <td id="D9">&#9925</td>
+      <td id="E9">&#9925</td>
+      <td id="F9">&#9925</td>
+      <td id="G9">&#9925</td>
+      <td id="H9">&#9925</td>
+      <td id="I9">&#9925</td>
+      <td id="J9">&#9925</td>
+    </tr>
+  </table>
+  <div>
+    <button class="reset">Reset</button>
+  </div>
+  <script src="js/battleship.js"></script>
+</body>
+
+</html>
