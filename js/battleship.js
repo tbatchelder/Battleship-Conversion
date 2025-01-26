@@ -1,3 +1,12 @@
+// Original python code for the Battleship game belongs to Katrina from the Joy of Coding Acedemy
+// It is presented here in comments for reference
+//
+// This project was to refactor the python code into a HTML/JavaScript version
+// Due to the differences in language, not all original code translated and additional functionality was needed
+//
+// Author: Timothy Batchelder
+// 01/26/2025
+//
 // import turtle
 // import random
 //
@@ -124,22 +133,22 @@
 //                     t.right(90)
 //                 t.end_fill()
 //             break
-
+//
 // def place_ships():
 //     for ship in ships_info:
 //         place_ship(ship)
 //     return [pos for ship in ships_info for pos in ship["positions"]]
-
+//
 // def show_message(msg, color="red"):
 //     message.clear()
 //     message.penup()
 //     message.goto(0, -280)
 //     message.color(color)
 //     message.write(msg, align="center", font=("Arial", 12, "normal"))
-    
+//
 //     # Wait for a short time so the message can be read
 //     screen.ontimer(lambda: None, 2000)  # 2 second pause
-
+//
 // def draw_peg(x, y, hit):
 //     t.penup()
 //     t.goto(grid_origin_x + x * cell_size + cell_size/2 + cell_size/4,
@@ -148,7 +157,7 @@
 //     t.begin_fill()
 //     t.circle(cell_size/4)
 //     t.end_fill()
-
+//
 // def check_sunk_ships():
 //     for ship in ships_info:
 //         if not ship["sunk"] and all(pos in guessed_positions for pos in ship["positions"]):
@@ -156,39 +165,39 @@
 //             draw_legend()
 //             return ship["name"]
 //     return None
-
+//
 // def play_game():
 //     global guessed_positions
 //     draw_grid()
 //     draw_legend()
 //     all_ship_positions = place_ships()
-    
+//
 //     hits = 0
 //     total_ship_cells = sum(ship["length"] for ship in ships_info)
 //     guessed_positions = set()
 //     show_message("Welcome to Battleship! Enter your first guess.", "blue")
-    
+//
 //     while hits < total_ship_cells:
 //         guess = screen.textinput("Make a guess", "Enter coordinates (e.g., A1):")
 //         if not guess:
 //             break
-            
+//
 //         try:
 //             message.clear()  # Clear any previous message
-            
+//
 //             col = ord(guess[0].upper()) - ord('A')
 //             row = int(guess[1:]) - 1
-            
+//
 //             if not (0 <= col < grid_size and 0 <= row < grid_size):
 //                 raise ValueError("Coordinates out of bounds!")
-            
+//
 //             if (col, row) in guessed_positions:
 //                 raise ValueError("You already guessed that position!")
-            
+//
 //             guessed_positions.add((col, row))
 //             hit = (col, row) in all_ship_positions
 //             draw_peg(col, row, hit)
-            
+//
 //             if hit:
 //                 hits += 1
 //                 sunk_ship = check_sunk_ships()
@@ -196,22 +205,21 @@
 //                     show_message(f"You sunk the {sunk_ship}!", "green")
 //                 else:
 //                     show_message("Hit!", "green")
-                
+//
 //                 if hits == total_ship_cells:
 //                     show_message("You won! All ships sunk!", "green")
 //                     screen.textinput("Game Over", "Congratulations! You won!")
 //                     break
 //             else:
 //                 show_message("Miss!", "blue")
-            
+//
 //         except ValueError as e:
 //             show_message(str(e), "red")
 
 
 
-
-
 // Create a game space for it
+// This is done to reduce the possibility of overlap with any other global variables
 let bs = [];
 
 bs.ships_info = [];
@@ -236,19 +244,19 @@ bs.boardList = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 
-
-
+// ##########################################################################################################
+// ##########################################################################################################
 // Determine if the place selected is empty enough for the ship
 function notFilled(h, x, y, len) {
   if (h) {
     for (let i = 0; i < len; i++) {
-      if (bs.boardList[x][y + i] == 1) {
+      if (bs.boardList[x][y + i] > 0) {
         return false;
       }
     }
   } else {
     for (let i = 0; i < len; i++) {
-      if (bs.boardList[y][x + i] == 1) {
+      if (bs.boardList[y][x + i] > 0) {
         return false;
       }
     }
@@ -274,7 +282,8 @@ function canPlaceShip(horizontal, x, y, len) {
   return false;
 }
 
-function placeShip(ship) {
+// Place a single ship onto the board
+function placeShip(ship, shipNumber) {
   let placed = false;
   const boolArray = [true, false];
 
@@ -287,12 +296,12 @@ function placeShip(ship) {
     if (canPlaceShip(horizontal, x, y, ship.length)) {
       if (horizontal) {
         for (let i = 0; i < ship.length; i++) {
-          bs.boardList[x][y + i] = 1;////////////////////////////////////
+          bs.boardList[x][y + i] = shipNumber + 1;
           placed = true;
         }
       } else {
         for (let i = 0; i < ship.length; i++) {
-          bs.boardList[x + i][y] = 1;/////////////////////////////////////
+          bs.boardList[x + i][y] = shipNumber + 1;
           placed = true;
         }
       }
@@ -300,23 +309,33 @@ function placeShip(ship) {
   }
 }
 
+// Place all ships onto the board
 function placeShips() {
-  for (let k = 0; k < 5; k++) {
-    placeShip(bs.ships_info[k]);///////////////////////////////////////
-    console.log(bs.boardList);
+  for (let thisShip = 0; thisShip < 5; thisShip++) {
+    placeShip(bs.ships_info[thisShip], thisShip);
   }
+  console.log(bs.boardList);
 }
+// ##########################################################################################################
+// ##########################################################################################################
 
-function checkShipSunk() {
-  for (i = 0; i < 5; i++) {
-    if (!bs.ships_info[i].sunk) {
-      if (bs.ships_info[i].hits == bs.ships_info[i].length) {
-        bs.ships_info[i].sunk = true;
+// ##########################################################################################################
+// ##########################################################################################################
+//  Check to see if a ship was sunk
+function checkShipSunk(thisShip) {
+  // for (i = 0; i < 5; i++) {
+    // if (bs.ships_info[thisShip].hits == bs.ships_info.length[thisShip]) {
+      if (bs.ships_info[thisShip].hits == bs.ships_info[thisShip].length) {
+        bs.ships_info[thisShip].sunk = true;
+
+        const element = document.getElementById("ship" + thisShip);
+        element.classList.add("sunk");
       }
-    }
-  }
+    // }
+  // }
 }
 
+// Draw a peg to show that the tile was used
 function drawPeg(posID, hit) {
   const cellToColor = document.getElementById(posID);
 
@@ -327,15 +346,23 @@ function drawPeg(posID, hit) {
   }
 }
 
+//  Check to see if a ship was hit
 function checkShipHit(x, y, coords) {
-  if (bs.boardList[x][y] == 1) {
-    bs.ships_info[x].hits += 1;
+  if (bs.boardList[x][y] > 0) {
+    const shipHit = bs.boardList[x][y] - 1;
+
+    bs.ships_info[shipHit].hits += 1;
+
     drawPeg(coords, true);
+    
+    checkShipSunk(shipHit);
+
   } else {
     drawPeg(coords, false);
   }
 }
 
+//  Fire a shot onto the board
 function fireShot(coords) {
   const rowConverter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
@@ -345,10 +372,13 @@ function fireShot(coords) {
   const y = rowConverter.indexOf(coordArray[0]);
 
   checkShipHit(x, y, coords);
-  console.log(x, y);
-  console.log(bs.boardList[x][y]);
 }
+// ##########################################################################################################
+// ##########################################################################################################
 
+// ##########################################################################################################
+// ##########################################################################################################
+// Reset the game and re-place new ship positions
 function reset() {
   const rowConverter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
@@ -365,6 +395,9 @@ function reset() {
   for (s = 0; s < 5; s++) {
     bs.ships_info[s].hits = 0;
     bs.ships_info[s].sunk = false;
+
+    const element = document.getElementById("ship" + s.toString());
+    element.classList.add("normal");
   }
 
   placeShips();
