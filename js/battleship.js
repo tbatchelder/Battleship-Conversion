@@ -237,23 +237,6 @@ bs.boardList = [
 ];
 
 
-// Can the ship be placed into the table here
-function canPlaceShip(horizontal, x, y, len) {
-  if (horizontal) {
-    if ((y + len) < 11) {
-      if (notFilled(true, x, y, len)) {
-        return true;
-      }
-    }
-  } else {
-    if ((x + len) < 11) {
-      if (notFilled(false, x, y, len)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
 
 // Determine if the place selected is empty enough for the ship
 function notFilled(h, x, y, len) {
@@ -273,7 +256,25 @@ function notFilled(h, x, y, len) {
   return true;
 }
 
-function place_ship(ship,k) {
+// Can the ship be placed into the table here
+function canPlaceShip(horizontal, x, y, len) {
+  if (horizontal) {
+    if ((y + len) < 11) {
+      if (notFilled(true, x, y, len)) {
+        return true;
+      }
+    }
+  } else {
+    if ((x + len) < 11) {
+      if (notFilled(false, x, y, len)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function placeShip(ship) {
   let placed = false;
   const boolArray = [true, false];
 
@@ -286,12 +287,12 @@ function place_ship(ship,k) {
     if (canPlaceShip(horizontal, x, y, ship.length)) {
       if (horizontal) {
         for (let i = 0; i < ship.length; i++) {
-          bs.boardList[x][y + i] = k+1;////////////////////////////////////
+          bs.boardList[x][y + i] = 1;////////////////////////////////////
           placed = true;
         }
       } else {
         for (let i = 0; i < ship.length; i++) {
-          bs.boardList[x + i][y] = k+1;/////////////////////////////////////
+          bs.boardList[x + i][y] = 1;/////////////////////////////////////
           placed = true;
         }
       }
@@ -301,18 +302,8 @@ function place_ship(ship,k) {
 
 function placeShips() {
   for (let k = 0; k < 5; k++) {
-    place_ship(bs.ships_info[k],k);///////////////////////////////////////
+    placeShip(bs.ships_info[k]);///////////////////////////////////////
     console.log(bs.boardList);
-  }
-}
-
-function drawPeg(posID, hit) {
-  const cellToColor = document.getElementById(posID);
-
-  if (hit) {
-    cellToColor.style.backgroundColor = "red";
-  } else {
-    cellToColor.style.backgroundColor = "seagreen";
   }
 }
 
@@ -321,88 +312,64 @@ function checkShipSunk() {
     if (!bs.ships_info[i].sunk) {
       if (bs.ships_info[i].hits == bs.ships_info[i].length) {
         bs.ships_info[i].sunk = true;
-        return true;
       }
     }
   }
-  return false;
 }
 
-function playGame() {
+function drawPeg(posID, hit) {
+  const cellToColor = document.getElementById(posID);
+
+  if (hit) {
+    cellToColor.innerText = String.fromCodePoint(128165);
+  } else {
+    cellToColor.innerText = String.fromCodePoint(128166);
+  }
+}
+
+function checkShipHit(x, y, coords) {
+  if (bs.boardList[x][y] == 1) {
+    bs.ships_info[x].hits += 1;
+    drawPeg(coords, true);
+  } else {
+    drawPeg(coords, false);
+  }
+}
+
+function fireShot(coords) {
+  const rowConverter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+
+  const coordArray = coords.split("");
+
+  const x = parseInt(coordArray[1]);
+  const y = rowConverter.indexOf(coordArray[0]);
+
+  checkShipHit(x, y, coords);
+  console.log(x, y);
+  console.log(bs.boardList[x][y]);
+}
+
+function reset() {
+  const rowConverter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+
+  for (let x = 0; x < 10; x++) {
+    for (let y = 0; y < 10; y++) {
+      bs.boardList[x][y] = 0;
+
+      const cell = rowConverter[y] + x.toString();
+      const cellToColor = document.getElementById(cell);
+      cellToColor.innerText = String.fromCodePoint(9925);
+    }
+  }
+
+  for (s = 0; s < 5; s++) {
+    bs.ships_info[s].hits = 0;
+    bs.ships_info[s].sunk = false;
+  }
+
   placeShips();
-
-
-
-
-
-    
-
-//     total_ship_cells = sum(ship["length"] for ship in ships_info)
-//     guessed_positions = set()
-//     show_message("Welcome to Battleship! Enter your first guess.", "blue")
-    
-//     while hits < total_ship_cells:
-//         guess = screen.textinput("Make a guess", "Enter coordinates (e.g., A1):")
-//         if not guess:
-//             break
-            
-//         try:
-//             message.clear()  # Clear any previous message
-            
-//             col = ord(guess[0].upper()) - ord('A')
-//             row = int(guess[1:]) - 1
-            
-//             if not (0 <= col < grid_size and 0 <= row < grid_size):
-//                 raise ValueError("Coordinates out of bounds!")
-            
-//             if (col, row) in guessed_positions:
-//                 raise ValueError("You already guessed that position!")
-            
-//             guessed_positions.add((col, row))
-//             hit = (col, row) in all_ship_positions
-//             draw_peg(col, row, hit)
-            
-//             if hit:
-//                 hits += 1
-//                 sunk_ship = check_sunk_ships()
-//                 if sunk_ship:
-//                     show_message(f"You sunk the {sunk_ship}!", "green")
-//                 else:
-//                     show_message("Hit!", "green")
-                
-//                 if hits == total_ship_cells:
-//                     show_message("You won! All ships sunk!", "green")
-//                     screen.textinput("Game Over", "Congratulations! You won!")
-//                     break
-//             else:
-//                 show_message("Miss!", "blue")
-            
-//         except ValueError as e:
-//             show_message(str(e), "red")
 }
-// {
-//   const rowConverter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-
-//   const gridPosition = rowConverter[x] + y.toString();
-
-//   const gridCell = document.getElementById(gridPosition);
-
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // # Start the game
-// play_game()
-// screen.mainloop()
+placeShips();
+
