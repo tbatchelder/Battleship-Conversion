@@ -1,4 +1,4 @@
-// Original python code for the Battleship game belongs to Katrina from the Joy of Coding Acedemy
+// Original python code for the Battleship game belongs to Katrina from the Joy of Coding Academy
 // It is presented here in comments for reference
 //
 // This project was to refactor the python code into a HTML/JavaScript version
@@ -107,7 +107,7 @@
 //         x = random.randint(0, grid_size-1)
 //         y = random.randint(0, grid_size-1)
 //         horizontal = random.choice([True, False])
-        
+
 //         if can_place_ship(ship["length"], x, y, horizontal):
 //             ship_positions = []
 //             if horizontal:
@@ -118,9 +118,9 @@
 //                 for i in range(ship["length"]):
 //                     board[y+i][x] = 'S'
 //                     ship_positions.append((x, y+i))
-            
+
 //             ship["positions"] = ship_positions
-            
+
 //             # Draw ship (for debugging)
 //             t.color(OCEAN_BLUE) #USE SHIP_GRAY TO SEE THE SHIPS
 //             for pos_x, pos_y in ship_positions:
@@ -216,18 +216,16 @@
 //         except ValueError as e:
 //             show_message(str(e), "red")
 
-
-
 // Create a game space for it
 // This is done to reduce the possibility of overlap with any other global variables
 let bs = [];
 
 bs.ships_info = [];
-bs.ships_info[0] = {"name": "Carrier", "length": 5, "hits": 0, "sunk": false };
-bs.ships_info[1] = {"name": "Battleship", "length": 4, "hits": 0, "sunk": false};
-bs.ships_info[2] = {"name": "Cruiser", "length": 3, "hits": 0, "sunk": false};
-bs.ships_info[3] = {"name": "Submarine", "length": 3, "hits": 0, "sunk": false};
-bs.ships_info[4] = {"name": "Destroyer", "length": 2, "hits": 0, "sunk": false};
+bs.ships_info[0] = { name: "Carrier", length: 5, hits: 0, sunk: false };
+bs.ships_info[1] = { name: "Battleship", length: 4, hits: 0, sunk: false };
+bs.ships_info[2] = { name: "Cruiser", length: 3, hits: 0, sunk: false };
+bs.ships_info[3] = { name: "Submarine", length: 3, hits: 0, sunk: false };
+bs.ships_info[4] = { name: "Destroyer", length: 2, hits: 0, sunk: false };
 
 bs.board = document.getElementById("board");
 
@@ -241,7 +239,7 @@ bs.boardList = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
 // ##########################################################################################################
@@ -250,7 +248,7 @@ bs.boardList = [
 function notFilled(h, x, y, len) {
   if (h) {
     for (let i = 0; i < len; i++) {
-      if (bs.boardList[x][y + i] > 0) {
+      if (bs.boardList[x + i][y] > 0) {
         return false;
       }
     }
@@ -267,13 +265,13 @@ function notFilled(h, x, y, len) {
 // Can the ship be placed into the table here
 function canPlaceShip(horizontal, x, y, len) {
   if (horizontal) {
-    if ((y + len) < 11) {
+    if (y + len < 11) {
       if (notFilled(true, x, y, len)) {
         return true;
       }
     }
   } else {
-    if ((x + len) < 11) {
+    if (x + len < 11) {
       if (notFilled(false, x, y, len)) {
         return true;
       }
@@ -292,7 +290,7 @@ function placeShip(ship, shipNumber) {
     const y = Math.floor(Math.random() * 10);
 
     const horizontal = boolArray[Math.floor(Math.random() * boolArray.length)];
-  
+
     if (canPlaceShip(horizontal, x, y, ship.length)) {
       if (horizontal) {
         for (let i = 0; i < ship.length; i++) {
@@ -314,7 +312,7 @@ function placeShips() {
   for (let thisShip = 0; thisShip < 5; thisShip++) {
     placeShip(bs.ships_info[thisShip], thisShip);
   }
-  console.log(bs.boardList);
+  // console.log(bs.boardList);
 }
 // ##########################################################################################################
 // ##########################################################################################################
@@ -324,14 +322,14 @@ function placeShips() {
 //  Check to see if a ship was sunk
 function checkShipSunk(thisShip) {
   // for (i = 0; i < 5; i++) {
-    // if (bs.ships_info[thisShip].hits == bs.ships_info.length[thisShip]) {
-      if (bs.ships_info[thisShip].hits == bs.ships_info[thisShip].length) {
-        bs.ships_info[thisShip].sunk = true;
+  // if (bs.ships_info[thisShip].hits == bs.ships_info.length[thisShip]) {
+  if (bs.ships_info[thisShip].hits == bs.ships_info[thisShip].length) {
+    bs.ships_info[thisShip].sunk = true;
 
-        const element = document.getElementById("ship" + thisShip);
-        element.classList.add("sunk");
-      }
-    // }
+    const element = document.getElementById("ship" + thisShip);
+    element.classList.add("sunk");
+  }
+  // }
   // }
 }
 
@@ -354,9 +352,8 @@ function checkShipHit(x, y, coords) {
     bs.ships_info[shipHit].hits += 1;
 
     drawPeg(coords, true);
-    
-    checkShipSunk(shipHit);
 
+    checkShipSunk(shipHit);
   } else {
     drawPeg(coords, false);
   }
@@ -364,6 +361,10 @@ function checkShipHit(x, y, coords) {
 
 //  Fire a shot onto the board
 function fireShot(coords) {
+  const cell = document.getElementById(coords);
+  if (cell.dataset.fired) return;
+  cell.dataset.fired = "true";
+
   const rowConverter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
   const coordArray = coords.split("");
@@ -389,6 +390,7 @@ function reset() {
       const cell = rowConverter[y] + x.toString();
       const cellToColor = document.getElementById(cell);
       cellToColor.innerText = String.fromCodePoint(9925);
+      delete cellToColor.dataset.fired;
     }
   }
 
@@ -405,4 +407,3 @@ function reset() {
 
 // # Start the game
 placeShips();
-
