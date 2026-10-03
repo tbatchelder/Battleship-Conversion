@@ -248,13 +248,13 @@ bs.boardList = [
 function notFilled(h, x, y, len) {
   if (h) {
     for (let i = 0; i < len; i++) {
-      if (bs.boardList[x + i][y] > 0) {
+      if (bs.boardList[x][y + i] > 0) {
         return false;
       }
     }
   } else {
     for (let i = 0; i < len; i++) {
-      if (bs.boardList[y][x + i] > 0) {
+      if (bs.boardList[x + i][y] > 0) {
         return false;
       }
     }
@@ -312,7 +312,7 @@ function placeShips() {
   for (let thisShip = 0; thisShip < 5; thisShip++) {
     placeShip(bs.ships_info[thisShip], thisShip);
   }
-  // console.log(bs.boardList);
+  console.log(bs.boardList);
 }
 // ##########################################################################################################
 // ##########################################################################################################
@@ -399,7 +399,7 @@ function reset() {
     bs.ships_info[s].sunk = false;
 
     const element = document.getElementById("ship" + s.toString());
-    element.classList.add("normal");
+    element.classList.remove("sunk");
   }
 
   placeShips();
